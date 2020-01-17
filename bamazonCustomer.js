@@ -21,7 +21,7 @@ connection.connect(function (err) {
 function findProducts() {
     connection.query("SELECT * FROM products", function (err, data) {
         if (err) throw err;
-
+        
         console.table(data);
         locateProduct();        
     });
@@ -38,12 +38,12 @@ function locateProduct() {
             message:"Please input the ID of the product you wish to purchase"
 
         }).then(function(answer){
-            console.log("You Want to Buy " + answer.product)
-            findQuantity();
+            console.log("\n")
+            findQuantity(answer.product);
         });
 }
 
-function findQuantity(){
+function findQuantity(product){
 
     inquirer
         .prompt({
@@ -53,7 +53,18 @@ function findQuantity(){
             message:"How much would you like to purchase?"
 
         }).then(function(answer){
-            console.log("You Want to Buy " + answer.quantity)
-            connection.end();
+            connection.query("SELECT * FROM products WHERE ?",{
+                item_id: product
+            },function (err, data) {
+                if (err) throw err;
+                if(data[0].stock_quantity >= answer.quantity){
+                    console.log("\n")
+                    console.log("There is enough " + data[0].product_name + " in stock!")
+                }else{
+                    console.log("\n")
+                    "There is not enough " + data[0].product_name + " in stock. Sorry!"
+                }
+                connection.end();
+            });            
         });
 }
