@@ -58,8 +58,19 @@ function findQuantity(product){
             },function (err, data) {
                 if (err) throw err;
                 if(data[0].stock_quantity >= answer.quantity){
-                    console.log("\n")
-                    console.log("There is enough " + data[0].product_name + " in stock!")
+                    var newQuantity = data[0].stock_quantity - answer.quantity
+                    connection.query("UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity:newQuantity
+                        },
+                        {
+                            item_id: product
+                        }
+                    ],function (err, data) {
+                        if (err) throw err;
+                        console.log("Thank you for your purchase!")      
+                    });
                 }else{
                     console.log("\n")
                     "There is not enough " + data[0].product_name + " in stock. Sorry!"
