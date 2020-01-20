@@ -59,6 +59,7 @@ function findQuantity(product){
                 if (err) throw err;
                 if(data[0].stock_quantity >= answer.quantity){
                     var newQuantity = data[0].stock_quantity - answer.quantity
+                    var prodName = data[0].product_name
                     connection.query("UPDATE products SET ? WHERE ?",
                     [
                         {
@@ -69,13 +70,34 @@ function findQuantity(product){
                         }
                     ],function (err, data) {
                         if (err) throw err;
-                        console.log("Thank you for your purchase!")      
+                        console.log("\n Thank you for your purchase! \n Enjoy your " + prodName + "\n") 
+                        buyAgain();     
                     });
                 }else{
-                    console.log("\n")
-                    "There is not enough " + data[0].product_name + " in stock. Sorry!"
+                    console.log("\n There is not enough " + data[0].product_name + " in stock. Sorry!")
+                    buyAgain();
                 }
-                connection.end();
+                
             });            
+        });
+}
+
+function buyAgain(){
+
+    inquirer
+        .prompt({
+
+            name:"continue",
+            type:"list",
+            message:"Would you like to make another purchase?",
+            choices: ["Yes", "No"]
+
+        }).then(function(answer){
+            if(answer.continue === "Yes"){
+                findProducts();
+            }else{
+                console.log("\n Please come again!")
+                connection.end();
+            }
         });
 }
