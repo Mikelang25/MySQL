@@ -44,7 +44,7 @@ function managerActions() {
                     addInventory();
                     break;
                 case "Add New Product":
-
+                    addProduct();
                     break;
                 case "Exit":
                     connection.end();
@@ -97,7 +97,7 @@ function addInventory() {
         console.table(data);
         inquirer
             .prompt([{
-            
+
                 name: "inventory",
                 type: "input",
                 message: "Please input the ID of the product you would like to increase stock of"
@@ -106,7 +106,7 @@ function addInventory() {
                 name: "level",
                 type: "input",
                 message: "Please provide a new inventory level"
-                
+
             }]).then(function (answer) {
                 connection.query("UPDATE products SET ? WHERE ?",
                     [{
@@ -123,4 +123,47 @@ function addInventory() {
                     });
             });
     });
+}
+
+function addProduct() {
+    inquirer
+        .prompt([{
+
+            name: "prodName",
+            type: "input",
+            message: "Please input the name of the product"
+        },
+        {
+            name: "prodDept",
+            type: "input",
+            message: "Please assign a department"
+
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "Please provide a price for the item"
+
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "How much would you like to put in stock?"
+
+        }]).then(function (answer) {
+
+            var newProduct = [
+                answer.prodName,
+                answer.prodDept,
+                answer.price,
+                answer.quantity
+            ]
+
+            connection.query("INSERT INTO products (product_Name,department_name,price,stock_quantity) VALUES (?,?,?,?)", newProduct,function (err, data) {
+                    if (err) throw err;
+                    console.log("\nYour product has been")
+                    console.log("\n");
+                    viewProducts();
+            });
+        });
 }
