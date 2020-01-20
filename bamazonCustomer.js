@@ -58,15 +58,19 @@ function findQuantity(product){
             },function (err, data) {
                 if (err) throw err;
                 if(data[0].stock_quantity >= answer.quantity){
-                    var newQuantity = data[0].stock_quantity - answer.quantity
-                    var prodName = data[0].product_name
+                    var newQuantity = data[0].stock_quantity - answer.quantity;
+                    var prodName = data[0].product_name;
+                    var prodPrice = data[0].price;
+                    var orderTotal = prodPrice * answer.quantity;
+                    var totalSales = orderTotal.toFixed(2) + data[0].total_sales;
                     connection.query("UPDATE products SET ? WHERE ?",
                     [
                         {
-                            stock_quantity:newQuantity
+                            stock_quantity:newQuantity,
+                            total_sales:totalSales
                         },
                         {
-                            item_id: product
+                            item_id:product
                         }
                     ],function (err, data) {
                         if (err) throw err;
