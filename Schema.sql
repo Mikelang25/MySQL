@@ -31,17 +31,17 @@ INSERT INTO departments (department_name,over_head_costs)
 VALUES ("kitchen",1200);
 
 
-INSERT INTO products (product_name, department_name,price,stock_quantity)
-VALUES ("bike","recreation",199.99,50);
+INSERT INTO products (product_name, department_name,price,stock_quantity, total_sales)
+VALUES ("bike","recreation",199.99,50,4182.56);
 
-INSERT INTO products (product_name, department_name,price,stock_quantity)
-VALUES ("baseball bats","recreation",399.99,150);
+INSERT INTO products (product_name, department_name,price,stock_quantity, total_sales)
+VALUES ("baseball bats","recreation",399.99,150, 1782.35);
 
-INSERT INTO products (product_name, department_name,price,stock_quantity)
-VALUES ("couch","home",999.99,200);
+INSERT INTO products (product_name, department_name,price,stock_quantity, total_sales)
+VALUES ("couch","home",999.99,200,8000.50);
 
-INSERT INTO products (product_name, department_name,price,stock_quantity)
-VALUES ("lamp","home",59.99,30);
+INSERT INTO products (product_name, department_name,price,stock_quantity, total_sales)
+VALUES ("lamp","home",59.99,30, 678.54);
 
 INSERT INTO products (product_name, department_name,price,stock_quantity)
 VALUES ("rug","home",100.99,25);

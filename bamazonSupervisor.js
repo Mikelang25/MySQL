@@ -36,7 +36,7 @@ function supervisorActions() {
                     viewSales();
                     break;
                 case "Create New Department":
-
+                    addDepartment();
                     break;
                 case "Exit":
                     connection.end();
@@ -46,10 +46,41 @@ function supervisorActions() {
 }
 
 function viewSales() {
-    connection.query("SELECT * FROM products", function (err, data) {
+    connection.query("SELECT departments.department_id, departments.department_name, SUM(products.total_sales) AS product_sales, departments.over_head_costs AS over_head_costs , SUM(products.total_sales) - departments.over_head_costs AS total_profit " +    
+                    "FROM products INNER JOIN departments ON products.department_name = departments.department_Name GROUP BY departments.department_name", function (err, data) {
         if (err) throw err;
         console.log("\n");
-        console.log(data);
+        console.table(data);
+        supervisorActions();
     });
+}
 
+function addDepartment(){
+
+    inquirer
+    .prompt([{
+
+        name:"department",
+        type:"input",
+        message:"What is the name of your new department?",
+    },
+    {
+        name:"cost",
+        type:"input",
+        message:"What are the overhead costs associated with this department?"
+
+    }]).then(function(answer){
+
+        connection.query("INSERT INTO departments (department_name, over_head_costs) VALUES (?,?)",
+        [
+            answer.department,
+            answer.cost
+        ]
+        ,function (err, data) {
+        if (err) throw err;
+        console.log("\n");
+        console.table("Your new department has been successfully added!\n");
+        supervisorActions();
+        });
+    }); 
 }
