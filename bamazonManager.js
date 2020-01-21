@@ -126,44 +126,52 @@ function addInventory() {
 }
 
 function addProduct() {
-    inquirer
-        .prompt([{
+    connection.query("SELECT * FROM departments", function (err, data) {
+        if (err) throw err;
+        var departmentsList = [];
+        for (var i = 0; i < data.length; i++) {
+            departmentsList.push(data[i].department_name)
+        }
+        inquirer
+            .prompt([{
 
-            name: "prodName",
-            type: "input",
-            message: "Please input the name of the product"
-        },
-        {
-            name: "prodDept",
-            type: "input",
-            message: "Please assign a department"
+                name: "prodName",
+                type: "input",
+                message: "Please input the name of the product"
+            },
+            {
+                name: "prodDept",
+                type: "list",
+                message: "Please assign a department",
+                choices: departmentsList
+            },
+            {
+                name: "price",
+                type: "input",
+                message: "Please provide a price for the item"
 
-        },
-        {
-            name: "price",
-            type: "input",
-            message: "Please provide a price for the item"
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "How much would you like to put in stock?"
 
-        },
-        {
-            name: "quantity",
-            type: "input",
-            message: "How much would you like to put in stock?"
+            }]).then(function (answer) {
 
-        }]).then(function (answer) {
+                var newProduct = [
+                    answer.prodName,
+                    answer.prodDept,
+                    answer.price,
+                    answer.quantity
+                ]
 
-            var newProduct = [
-                answer.prodName,
-                answer.prodDept,
-                answer.price,
-                answer.quantity
-            ]
-
-            connection.query("INSERT INTO products (product_Name,department_name,price,stock_quantity) VALUES (?,?,?,?)", newProduct,function (err, data) {
+                connection.query("INSERT INTO products (product_Name,department_name,price,stock_quantity) VALUES (?,?,?,?)", newProduct, function (err, data) {
                     if (err) throw err;
-                    console.log("\nYour product has been")
-                    console.log("\n");
+                    console.log("\nYour product has been added")
                     viewProducts();
+                });
             });
-        });
+
+
+    });
 }
